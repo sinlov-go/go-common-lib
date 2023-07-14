@@ -1,6 +1,8 @@
 package filepath_plus
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"os"
@@ -92,6 +94,18 @@ func ReadFileAsByte(path string) ([]byte, error) {
 	return data, nil
 }
 
+// ReadFileAsJson
+//
+//	read file as json
+func ReadFileAsJson(path string, v interface{}) error {
+	fileAsByte, err := ReadFileAsByte(path)
+	err = json.Unmarshal(fileAsByte, v)
+	if err != nil {
+		return fmt.Errorf("path: %s , read file as json err: %v", path, err)
+	}
+	return nil
+}
+
 // WriteFileByByte
 //
 //	write bytes to file
@@ -121,4 +135,43 @@ func WriteFileByByte(path string, data []byte, fileMod fs.FileMode, coverage boo
 		return fmt.Errorf("write data at path: %v, err: %v", path, err)
 	}
 	return nil
+}
+
+// WriteFileAsJson write json file
+//
+//	path most use Abs Path
+//	v data
+//	fileMod os.FileMode(0666) or os.FileMode(0644)
+//	coverage true will coverage old
+//	beauty will format json when write
+func WriteFileAsJson(path string, v interface{}, fileMod fs.FileMode, coverage, beauty bool) error {
+	if !coverage {
+		exists, err := PathExists(path)
+		if err != nil {
+			return err
+		}
+		if exists {
+			return fmt.Errorf("not coverage, which path exist %v", path)
+		}
+	}
+	data, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	if beauty {
+		var str bytes.Buffer
+		errJson := json.Indent(&str, data, "", "  ")
+		if errJson != nil {
+			return errJson
+		}
+		return WriteFileByByte(path, str.Bytes(), fileMod, coverage)
+	}
+	return WriteFileByByte(path, data, fileMod, coverage)
+}
+
+// WriteFileAsJsonBeauty
+//
+//	write json file as 0766 and beauty
+func WriteFileAsJsonBeauty(path string, v interface{}, coverage bool) error {
+	return WriteFileAsJson(path, v, os.FileMode(0766), coverage, true)
 }
