@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/sinlov-go/go-common-lib/compare/v1.1.0...v1.1.1) (2023-07-14)
+
+
+### ✨ Features
+
+* add filepath_plus.WriteFileAsJsonBeauty filepath_plus.filepath_plus ([68bfc77](https://github.com/sinlov-go/go-common-lib/commit/68bfc77965d2bb56ba9e9a3ec9122afd710a27e1))
+
 ## [1.1.0](https://github.com/sinlov-go/go-common-lib/compare/v1.0.0...v1.1.0) (2023-07-14)
 
 
