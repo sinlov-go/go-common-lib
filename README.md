@@ -1,4 +1,4 @@
-[![golang-ci](https://github.com/sinlov-go/go-common-lib/actions/workflows/golang-ci.yml/badge.svg)](https://github.com/sinlov-go/go-common-lib/actions/workflows/golang-ci.yml)
+[![ci](https://github.com/sinlov-go/go-common-lib/actions/workflows/ci.yml/badge.svg)](https://github.com/sinlov-go/go-common-lib/actions/workflows/ci.yml)
 [![license](https://img.shields.io/github/license/sinlov-go/go-common-lib)](https://github.com/sinlov-go/go-common-lib)
 [![go mod version](https://img.shields.io/github/go-mod/go-version/sinlov-go/go-common-lib?label=go.mod)](https://github.com/sinlov-go/go-common-lib)
 [![GoDoc](https://godoc.org/github.com/sinlov-go/go-common-lib?status.png)](https://godoc.org/github.com/sinlov-go/go-common-lib/)
@@ -69,10 +69,14 @@ $ echo "go mod vendor"
 
 ## usage
 
-- use this template, replace list below
-    - `github.com/sinlov-go/go-common-lib` to your package name
-    - `sinlov-go` to your owner name
-    - `go-common-lib` to your project name
+- use as `pkg`
+
+```go
+import (
+    "github.com/sinlov-go/go-common-lib/pkg/date"
+    "github.com/sinlov-go/go-common-lib/pkg/filepath_plus"
+)
+```
 
 # dev
 
