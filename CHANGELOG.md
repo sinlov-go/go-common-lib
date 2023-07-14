@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/sinlov-go/go-common-lib/compare/v1.0.0...v1.1.0) (2023-07-14)
+
+
+### ✨ Features
+
+* add pkg/filepath_plus ([f748987](https://github.com/sinlov-go/go-common-lib/commit/f74898730620f2fa9dd837ef661a51f0b24cc4be))
+
 ## 1.0.0 (2023-07-12)
 
 
