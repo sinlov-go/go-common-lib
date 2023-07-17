@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/sinlov-go/go-common-lib/compare/v1.1.1...v1.2.0) (2023-07-17)
+
+
+### ✨ Features
+
+* add github.com/sinlov-go/go-common-lib/pkg/env_kit and test case ([aebb204](https://github.com/sinlov-go/go-common-lib/commit/aebb204c82120eb0fcb4d19ea7bfd6feb3ad3143))
+
 ### [1.1.1](https://github.com/sinlov-go/go-common-lib/compare/v1.1.0...v1.1.1) (2023-07-14)
 
 
