@@ -1,6 +1,7 @@
 package filepath_plus
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -92,6 +93,34 @@ func ReadFileAsByte(path string) ([]byte, error) {
 	}
 
 	return data, nil
+}
+
+// ReadFileAsLines
+//
+// read file as lines, this method will read all line, so if file is too big, will be slow
+func ReadFileAsLines(path string) ([]string, error) {
+	if !PathExistsFast(path) {
+		return nil, fmt.Errorf("read path %s not exists", path)
+	}
+	if PathIsDir(path) {
+		return nil, fmt.Errorf("read path %s is dir", path)
+	}
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("read path %s error %s", path, err)
+	}
+	defer func(file *os.File) {
+		errFileClose := file.Close()
+		if errFileClose != nil {
+			fmt.Printf("read close file err: %v\n", errFileClose)
+		}
+	}(file)
+	scanner := bufio.NewScanner(file)
+	var readLine []string
+	for scanner.Scan() {
+		readLine = append(readLine, scanner.Text())
+	}
+	return readLine, nil
 }
 
 // ReadFileAsJson
