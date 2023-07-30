@@ -1,9 +1,14 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
+
+## [1.4.0](https://github.com/sinlov-go/go-common-lib/compare/1.3.0...v1.4.0) (2023-07-30)
+
+### ✨ Features
+
+* add filepath_plus.ReplaceFileLineByLine for Replace File Line By Line (2023-07-30) [3095ea61](https://github.com/sinlov-go/go-common-lib/commit/3095ea6145a0b988009a3abda28e5865b151322b)
 
 ## [1.3.0](https://github.com/sinlov-go/go-common-lib/compare/v1.2.0...v1.3.0) (2023-07-18)
-
 
 ### ✨ Features
 
@@ -11,13 +16,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [1.2.0](https://github.com/sinlov-go/go-common-lib/compare/v1.1.1...v1.2.0) (2023-07-17)
 
-
 ### ✨ Features
 
 * add github.com/sinlov-go/go-common-lib/pkg/env_kit and test case ([aebb204](https://github.com/sinlov-go/go-common-lib/commit/aebb204c82120eb0fcb4d19ea7bfd6feb3ad3143))
 
 ### [1.1.1](https://github.com/sinlov-go/go-common-lib/compare/v1.1.0...v1.1.1) (2023-07-14)
-
 
 ### ✨ Features
 
@@ -25,13 +28,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [1.1.0](https://github.com/sinlov-go/go-common-lib/compare/v1.0.0...v1.1.0) (2023-07-14)
 
-
 ### ✨ Features
 
 * add pkg/filepath_plus ([f748987](https://github.com/sinlov-go/go-common-lib/commit/f74898730620f2fa9dd837ef661a51f0b24cc4be))
 
 ## 1.0.0 (2023-07-12)
-
 
 ### ✨ Features
 
