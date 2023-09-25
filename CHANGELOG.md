@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.5.0](https://github.com/sinlov-go/go-common-lib/compare/1.4.0...v1.5.0) (2023-09-25)
+
+### ✨ Features
+
+* add pkg/data/timestamp func DistanceBetweenTimestampSecond and test case ([06759a2a](https://github.com/sinlov-go/go-common-lib/commit/06759a2aa4e8418d0df1683aaa1a70bb83c84fa3))
+
+### 👷‍ Build System
+
+* update build task ([2ea16a77](https://github.com/sinlov-go/go-common-lib/commit/2ea16a77c42c7f7f6bf7dae28eb977159ca68f3a))
+
 ## [1.4.0](https://github.com/sinlov-go/go-common-lib/compare/1.3.0...v1.4.0) (2023-07-30)
 
 ### ✨ Features
