@@ -16,6 +16,9 @@ INFO_BUILD_DOCKER_FROM_IMAGE=alpine:3.17
 INFO_BUILD_DOCKER_FILE=Dockerfile
 INFO_TEST_BUILD_DOCKER_FILE=Dockerfile.s6
 ## MakeDocker.mk settings end
+## MakeDockerCompose.mk settings start
+INFO_DOCKER_COMPOSE_DEFAULT_FILE ?=docker-compose.yml
+## MakeDockerCompose.mk settings end
 
 ## run info start
 ENV_RUN_INFO_HELP_ARGS= -h
@@ -24,19 +27,19 @@ ENV_RUN_INFO_ARGS=
 
 ## build dist env start
 # change to other build entrance
-ENV_ROOT_BUILD_ENTRANCE=cmd/go-common-lib/main.go
-ENV_ROOT_BUILD_BIN_NAME=${ROOT_NAME}
-ENV_ROOT_BUILD_PATH=build
-ENV_ROOT_BUILD_BIN_PATH=${ENV_ROOT_BUILD_PATH}/${ENV_ROOT_BUILD_BIN_NAME}
-ENV_ROOT_LOG_PATH=logs/
+ENV_ROOT_BUILD_ENTRANCE =cmd/go-common-lib/main.go
+ENV_ROOT_BUILD_BIN_NAME =${ROOT_NAME}
+ENV_ROOT_BUILD_PATH =build
+ENV_ROOT_BUILD_BIN_PATH =${ENV_ROOT_BUILD_PATH}/${ENV_ROOT_BUILD_BIN_NAME}
+ENV_ROOT_LOG_PATH =logs/
 # linux windows darwin  list as: go tool dist list
-ENV_DIST_GO_OS=linux
+ENV_DIST_GO_OS =linux
 # amd64 386
-ENV_DIST_GO_ARCH=amd64
+ENV_DIST_GO_ARCH =amd64
 # mark for dist and tag helper
-ENV_ROOT_MANIFEST_PKG_JSON?=package.json
-ENV_ROOT_MAKE_FILE?=Makefile
-ENV_ROOT_CHANGELOG_PATH?=CHANGELOG.md
+ENV_ROOT_MANIFEST_PKG_JSON ?=package.json
+ENV_ROOT_MAKE_FILE ?=Makefile
+ENV_ROOT_CHANGELOG_PATH ?=CHANGELOG.md
 ## build dist env end
 
 ## go test MakeGoTest.mk start
@@ -61,6 +64,7 @@ include z-MakefileUtils/MakeGoTestIntegration.mk
 include z-MakefileUtils/MakeGoDist.mk
 # include MakeDockerRun.mk for docker run
 include z-MakefileUtils/MakeDocker.mk
+include z-MakefileUtils/MakeDockerCompose.mk
 
 all: env
 
@@ -113,7 +117,7 @@ cleanTestData:
 clean: cleanTest cleanBuild cleanLog
 	@echo "~> clean finish"
 
-cleanAll: clean cleanAllDist
+cleanAll: clean
 	@echo "~> clean all finish"
 
 init:
@@ -132,8 +136,14 @@ style: modTidy modVerify modFmt modLintRun
 
 ci: modTidy modVerify modFmt modVet modLintRun test
 
+ciTestBenchmark: modTidy modVerify testBenchmark
+
+ciCoverageShow: modTidy modVerify modVet testCoverage testCoverageShow
+
+ciAll: ci ciTestBenchmark ciCoverageShow
+
 buildMain:
-	@echo "-> start build local OS"
+	@echo "-> start build local OS: ${PLATFORM} ${OS_BIT}"
 ifeq ($(OS),Windows_NT)
 	@go build -o $(subst /,\,${ENV_ROOT_BUILD_BIN_PATH}).exe ${ENV_ROOT_BUILD_ENTRANCE}
 	@echo "-> finish build out path: $(subst /,\,${ENV_ROOT_BUILD_BIN_PATH}).exe"
@@ -142,31 +152,26 @@ else
 	@echo "-> finish build out path: ${ENV_ROOT_BUILD_BIN_PATH}"
 endif
 
-dev: export ENV_WEB_AUTO_HOST=true
+dev: export CI_DEBUG=true
 dev: cleanBuild buildMain
-ifeq ($(OS),windows)
+ifeq ($(OS),Windows_NT)
 	$(subst /,\,${ENV_ROOT_BUILD_BIN_PATH}).exe ${ENV_RUN_INFO_ARGS}
 else
 	${ENV_ROOT_BUILD_BIN_PATH} ${ENV_RUN_INFO_ARGS}
 endif
 
-cloc:
-	@echo "see: https://stackoverflow.com/questions/26152014/cloc-ignore-exclude-list-file-clocignore"
-	cloc --exclude-list-file=.clocignore .
+runHelp: export CI_DEBUG=false
+runHelp:
+	go run -v ${ENV_ROOT_BUILD_ENTRANCE} ${ENV_RUN_INFO_HELP_ARGS}
 
 helpProjectRoot:
 	@echo "Help: Project root Makefile"
 ifeq ($(OS),Windows_NT)
 	@echo ""
-	@echo "warning: other install make cli tools has bug, please use: scoop install main/make"
+	@echo "warning: other install make cli tools has bug"
 	@echo " run will at make tools version 4.+"
 	@echo "windows use this kit must install tools blow:"
-	@echo ""
-	@echo "https://scoop.sh/#/apps?q=busybox&s=0&d=1&o=true"
-	@echo "-> scoop install main/busybox"
-	@echo "and"
-	@echo "https://scoop.sh/#/apps?q=shasum&s=0&d=1&o=true"
-	@echo "-> scoop install main/shasum"
+	@echo "-> scoop install main/make"
 	@echo ""
 endif
 	@echo "-- now build name: ${ROOT_NAME} version: ${ENV_DIST_VERSION}"
@@ -181,9 +186,14 @@ endif
 	@echo "~> make testCoverageBrowser - see coverage at browser --invert-match by config"
 	@echo "~> make testBenchmark       - run go test benchmark case all"
 	@echo "~> make ci                  - run CI tools tasks"
+	@echo "~> make ciTestBenchmark     - run CI tasks as test benchmark"
+	@echo "~> make ciCoverageShow      - run CI tasks as test coverage and show"
+	@echo "~> make ciAll               - run CI tasks all"
 	@echo "~> make style               - run local code fmt and style check"
+	@echo "~> make devHelp             - run as develop mode see help with ${ENV_RUN_INFO_HELP_ARGS}"
 	@echo "~> make dev                 - run as develop mode"
+	@echo "~> make runHelp             - run use ${ENV_RUN_INFO_HELP_ARGS}"
 
-help: helpGoMod helpGoTest helpDocker helpGoDist helpProjectRoot
+help: helpGoMod helpGoTest helpGoDist helpDocker helpProjectRoot
 	@echo ""
-	@echo "-- more info see Makefile include: MakeGoMod.mk MakeGoTest.mk MakeGoTestIntegration.mk MakeGoDist.mk MakeDocker.mk --"
+	@echo "-- more info see Makefile include: MakeGoMod.mk MakeGoTest.mk MakeGoTestIntegration.mk MakeDocker.mk --"

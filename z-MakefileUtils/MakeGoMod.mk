@@ -1,8 +1,8 @@
 ## for golang test task
 # include z-MakefileUtils/MakeGoMod.mk
 # windows use must install tools
-# https://scoop.sh/#/apps?q=gow&s=0&d=1&o=true
-# scoop install gow
+# https://scoop.sh/#/apps?q=busybox&s=0&d=1&o=true
+# scoop install main/busybox
 
 checkEnvGOPATH:
 ifndef GOPATH
@@ -83,11 +83,8 @@ endif
 
 modLintRun:
 	@echo "-> if run error try fix: make modCiLintInstall"
+	@golangci-lint --version
 	golangci-lint run -c .golangci.yaml
-
-modGosec:
-	@echo "-> if run error try fix: go install github.com/securego/gosec/v2/cmd/gosec@latest"
-	gosec -no-fail ./...
 
 helpGoMod:
 	@echo "Help: MakeGoMod.mk"
