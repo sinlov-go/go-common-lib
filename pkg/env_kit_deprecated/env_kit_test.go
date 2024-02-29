@@ -1,4 +1,4 @@
-package env_kit
+package env_kit_deprecated
 
 import (
 	"github.com/stretchr/testify/assert"

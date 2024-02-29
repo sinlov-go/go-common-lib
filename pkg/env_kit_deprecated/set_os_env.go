@@ -1,4 +1,4 @@
-package env_kit
+package env_kit_deprecated
 
 import (
 	"fmt"
@@ -9,6 +9,8 @@ import (
 // SetEnvStr
 //
 //	set env by key and val
+//
+// Deprecated: use github.com/sinlov-go/unittest-kit/env_kit instead
 //
 //nolint:golint,unused
 func SetEnvStr(key string, val string) error {
@@ -22,6 +24,8 @@ func SetEnvStr(key string, val string) error {
 // SetEnvBool
 //
 //	set env by key and val
+//
+// Deprecated: use github.com/sinlov-go/unittest-kit/env_kit instead
 //
 //nolint:golint,unused
 func SetEnvBool(key string, val bool) error {
@@ -41,6 +45,8 @@ func SetEnvBool(key string, val bool) error {
 //
 //	set env by key and val
 //
+// Deprecated: use github.com/sinlov-go/unittest-kit/env_kit instead
+//
 //nolint:golint,unused
 func SetEnvU64(key string, val uint64) error {
 	err := os.Setenv(key, strconv.FormatUint(val, 10))
@@ -53,6 +59,8 @@ func SetEnvU64(key string, val uint64) error {
 // SetEnvInt64
 //
 //	set env by key and val
+//
+// Deprecated: use github.com/sinlov-go/unittest-kit/env_kit instead
 //
 //nolint:golint,unused
 func SetEnvInt64(key string, val int64) error {

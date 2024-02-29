@@ -75,7 +75,8 @@ $ echo "go mod vendor"
 import (
     "github.com/sinlov-go/go-common-lib/pkg/date"
     "github.com/sinlov-go/go-common-lib/pkg/filepath_plus"
-    "github.com/sinlov-go/go-common-lib/pkg/env_kit"
+    "github.com/sinlov-go/go-common-lib/pkg/string_tools"
+    "github.com/sinlov-go/go-common-lib/pkg/folder"
 )
 ```
 

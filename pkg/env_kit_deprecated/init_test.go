@@ -1,4 +1,4 @@
-package env_kit
+package env_kit_deprecated
 
 const (
 	defTimeoutSecond = 10
