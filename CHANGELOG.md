@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.6.0](https://github.com/sinlov-go/go-common-lib/compare/1.5.0...v1.6.0) (2024-02-29)
+
+### ✨ Features
+
+* github.com/sinlov-go/go-common-lib/ pkg  pkg/string_tools pkg/folde ([19f97cf4](https://github.com/sinlov-go/go-common-lib/commit/19f97cf4ad534231fc3aa8c15df4597c9353505a))
+
 ## [1.5.0](https://github.com/sinlov-go/go-common-lib/compare/1.4.0...v1.5.0) (2023-09-25)
 
 ### ✨ Features
