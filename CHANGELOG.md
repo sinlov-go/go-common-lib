@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.7.0](https://github.com/sinlov-go/go-common-lib/compare/1.6.0...v1.7.0) (2024-03-02)
+
+### ✨ Features
+
+* add pkg/reflect_kit pkg/struct_kit for reflect ([8d077bf8](https://github.com/sinlov-go/go-common-lib/commit/8d077bf89f94da8c19c7885ae2b010dbf7497825))
+
 ## [1.6.0](https://github.com/sinlov-go/go-common-lib/compare/1.5.0...v1.6.0) (2024-02-29)
 
 ### ✨ Features
