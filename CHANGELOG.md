@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.7.1](https://github.com/sinlov-go/go-common-lib/compare/1.7.0...v1.7.1) (2024-08-30)
+
+### 🐛 Bug Fixes
+
+* use octal literals for file modes in tests ([40b90f8e](https://github.com/sinlov-go/go-common-lib/commit/40b90f8e0a2cb173d1c6a515e31cbfd39b75aa2a))
+
 ## [1.7.0](https://github.com/sinlov-go/go-common-lib/compare/1.6.0...v1.7.0) (2024-03-02)
 
 ### ✨ Features
