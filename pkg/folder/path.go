@@ -1,6 +1,7 @@
 package folder
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -10,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -52,9 +54,10 @@ func PathExistsFast(path string) bool {
 	return exists
 }
 
-// Mkdir will use FileMode 0766
+// Mkdir
+// will use FetchDefaultFolderFileMode()
 func Mkdir(path string) error {
-	err := os.MkdirAll(path, os.FileMode(0766))
+	err := os.MkdirAll(path, FetchDefaultFolderFileMode())
 	if err != nil {
 		return fmt.Errorf("fail MkdirAll at path: %s , err: %v", path, err)
 	}
@@ -197,7 +200,7 @@ func ReadFileAsJson(path string, v interface{}) error {
 // WriteFileByByte write bytes to file
 // path most use Abs Path
 // data []byte
-// fileMod os.FileMode(0666) or os.FileMode(0644)
+// fileMod os.FileMode(0o666) or os.FileMode(0o644)
 // coverage true will coverage old
 func WriteFileByByte(path string, data []byte, fileMod fs.FileMode, coverage bool) error {
 	if !coverage {
@@ -211,7 +214,7 @@ func WriteFileByByte(path string, data []byte, fileMod fs.FileMode, coverage boo
 	}
 	parentPath := filepath.Dir(path)
 	if !PathExistsFast(parentPath) {
-		err := os.MkdirAll(parentPath, fileMod)
+		err := os.MkdirAll(parentPath, FetchDefaultFolderFileMode())
 		if err != nil {
 			return fmt.Errorf("can not WriteFileByByte at new dir at mode: %v , at parent path: %v", fileMod, parentPath)
 		}
@@ -256,5 +259,52 @@ func WriteFileAsJson(path string, v interface{}, fileMod fs.FileMode, coverage, 
 
 // WriteFileAsJsonBeauty write json file as 0666 and beauty
 func WriteFileAsJsonBeauty(path string, v interface{}, coverage bool) error {
-	return WriteFileAsJson(path, v, os.FileMode(0666), coverage, true)
+	return WriteFileAsJson(path, v, os.FileMode(0o666), coverage, true)
+}
+
+// FetchDefaultFolderFileMode
+// if in windows, will return os.FileMode(0o766), windows not support umask
+//
+//	use umask to get folder file mode
+//
+// if not windows, will use umask, will return os.FileMode(0o777) - umask
+// not support umask will use os.FileMode(0o777)
+func FetchDefaultFolderFileMode() fs.FileMode {
+	switch runtime.GOOS {
+	case "windows":
+		return os.FileMode(0o766)
+	default:
+		umaskCode, err := getUmask()
+		if err != nil {
+			return os.FileMode(0o777)
+		}
+		if len(umaskCode) > 3 {
+			umaskCode = umaskCode[len(umaskCode)-3:]
+		}
+		umaskOct, errParseUmask := strconv.ParseInt(umaskCode, 8, 64)
+		if errParseUmask != nil {
+			return os.FileMode(0o777)
+		}
+		defaultFOlderCode := 0o777
+		nowOct := int(defaultFOlderCode) - int(umaskOct)
+		return os.FileMode(nowOct)
+	}
+}
+
+func getUmask() (string, error) {
+	cmd := exec.Command("sh", "-c", "umask")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		return "", err
+	}
+
+	scanner := bufio.NewScanner(&out)
+	scanner.Split(bufio.ScanWords)
+	if scanner.Scan() {
+		return strings.TrimSpace(scanner.Text()), nil
+	}
+
+	return "", fmt.Errorf("no output from umask command")
 }

@@ -69,11 +69,11 @@ func AlterFile(path string, data []byte) error {
 // CheckOrCreateFileWithStringFast
 //
 //	check or create file with content, if file exist, will not coverage
-//	crate folder of file with os.FileMode(0766)
+//	crate folder of file with os.FileMode(0o666)
 //	@param path string
 //	@param content string
 func CheckOrCreateFileWithStringFast(path string, context string) error {
-	return CheckOrCreateFileWithString(path, context, os.FileMode(0766))
+	return CheckOrCreateFileWithString(path, context, os.FileMode(0o666))
 }
 
 // CheckOrCreateFileWithString
@@ -81,7 +81,7 @@ func CheckOrCreateFileWithStringFast(path string, context string) error {
 //	check or create file with content, if file exist, will not coverage
 //	@param path string
 //	@param content string
-//	@param fileMod os.FileMode(0766) os.FileMode(0666) os.FileMode(0644)
+//	@param fileMod os.FileMode(0o666) os.FileMode(0o644)
 func CheckOrCreateFileWithString(path string, content string, fileMod fs.FileMode) error {
 	if content == "" {
 		return fmt.Errorf("CheckOrCreateFileWithString content is empty")
@@ -95,11 +95,11 @@ func CheckOrCreateFileWithString(path string, content string, fileMod fs.FileMod
 // AlterFileWithStringFast
 //
 //	check or file with content, if file exist, will coverage
-//	crate folder of file with os.FileMode(0766)
+//	crate folder of file with os.FileMode(0o666)
 //	@param path string
 //	@param content string
 func AlterFileWithStringFast(path string, content string) error {
-	return AlterFileWithString(path, content, os.FileMode(0766))
+	return AlterFileWithString(path, content, os.FileMode(0o666))
 }
 
 // AlterFileWithString
@@ -107,7 +107,7 @@ func AlterFileWithStringFast(path string, content string) error {
 //	check or file with content, if file exist, will coverage
 //	@param path string
 //	@param content string
-//	@param fileMod os.FileMode(0766) os.FileMode(0666) os.FileMode(0644)
+//	@param fileMod os.FileMode(0o666) os.FileMode(0o644)
 func AlterFileWithString(path string, content string, fileMod fs.FileMode) error {
 	if content == "" {
 		return fmt.Errorf("CheckOrCreateFileWithString content is empty")
