@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.8.1](https://github.com/sinlov-go/go-common-lib/compare/v1.8.0...v1.8.1) (2025-05-14)
+
+### 👷‍ Build System
+
+* enable linting for non-tag pushes ([16f538c1](https://github.com/sinlov-go/go-common-lib/commit/16f538c124ec0e5279a6b9985ab93cf69a643778))
+
 ## [1.8.0](https://github.com/sinlov-go/go-common-lib/compare/v1.7.1...v1.8.0) (2025-05-14)
 
 ### ✨ Features
