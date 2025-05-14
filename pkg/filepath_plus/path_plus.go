@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"os/exec"
@@ -73,6 +74,59 @@ func Mkdir(path string) error {
 	if err != nil {
 		return fmt.Errorf("fail MkdirAll at path: %s , err: %v", path, err)
 	}
+	return nil
+}
+
+// CopyFile
+//
+//	sourcePath is the path to the file in the embedded filesystem.
+//	target is the target path where the file will be copied.
+//	perm is the permission mode of the target file. os.FileMode(0o644) or os.FileMode(0o666)
+//	coverage true will coverage old
+func CopyFile(
+	sourcePath string,
+	target string,
+	perm os.FileMode,
+	coverage bool,
+) error {
+	sourceFile, errOpenSource := os.Open(sourcePath)
+	if errOpenSource != nil {
+		return fmt.Errorf("errOpenSource at CopyFile sourcePath %v", errOpenSource)
+	}
+
+	if !coverage {
+		exists, errExist := PathExists(target)
+		if errExist != nil {
+			return errExist
+		}
+
+		if exists {
+			return fmt.Errorf("not coverage, which target path exist %v", target)
+		}
+	}
+
+	parentPath := filepath.Dir(target)
+	if !PathExistsFast(parentPath) {
+		errMkParentPath := os.MkdirAll(parentPath, FetchDefaultFolderFileMode())
+		if errMkParentPath != nil {
+			return fmt.Errorf(
+				"can not CopyFile at new dir, at parent path: %v, why: %v",
+				parentPath,
+				errMkParentPath,
+			)
+		}
+	}
+
+	targetFile, errOpenTarget := os.OpenFile(target, os.O_CREATE|os.O_RDWR, perm)
+	if errOpenTarget != nil {
+		return fmt.Errorf("errOpenSource at CopyFile target mode: %v at: %s , %v", perm, target, errOpenTarget)
+	}
+
+	_, errCopy := io.Copy(targetFile, sourceFile)
+	if errCopy != nil {
+		return fmt.Errorf("errCopy at CopyFile target %v", errCopy)
+	}
+
 	return nil
 }
 
