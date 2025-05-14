@@ -64,6 +64,7 @@ jobs:
         run: go test -v -tags test ./...
 
       - name: Run golangci-lint
+        if: ${{ inputs.run_golangci_lint }}
         # https://github.com/golangci/golangci-lint-action?tab=readme-ov-file#compatibility
         # * `v8.0.0` works with `golangci-lint` version >= `v2.1.0`
         # * `v7.0.0` supports golangci-lint v2 only.

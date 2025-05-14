@@ -5,7 +5,7 @@ on:
     paths-ignore:
       - '**/README.md'
     branches:
-      # - 'main'
+      - 'main'
       - 'release-*'
       - 'FE-*'
       - '*-feature-*'
@@ -45,6 +45,9 @@ jobs:
       - version
     uses: ./.github/workflows/golang-ci.yml
     secrets: inherit
+    with:
+      version_name: latest
+      run_golangci_lint: $(! startsWith(github.ref, 'refs/tags/') )
 
   go-build-check-main:
     name: go-build-check-main
