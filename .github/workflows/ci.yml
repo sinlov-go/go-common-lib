@@ -46,7 +46,7 @@ jobs:
     uses: ./.github/workflows/golang-ci.yml
     secrets: inherit
     with:
-      run_golangci_lint: $(! startsWith(github.ref, 'refs/tags/') )
+      run_golangci_lint: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
   go-build-check-main:
     name: go-build-check-main
