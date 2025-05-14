@@ -15,13 +15,13 @@ updates:
       prefix-development: "build(action-dev)"
       # include: "scope"
     open-pull-requests-limit: 10
-    ignore:
-      - dependency-name: golangci/golangci-lint-action
-        versions:
-        - ">= v7"
-#     - dependency-name: foo
-#       versions:
-#       - ">= 2.a, < 3"
+#     ignore:
+#       - dependency-name: golangci/golangci-lint-action
+#         versions:
+#         - ">= v7"
+#       - dependency-name: foo
+#         versions:
+#         - ">= 2.a, < 3"
 
   - package-ecosystem: "gomod"
     directory: "/"
@@ -33,6 +33,6 @@ updates:
       prefix-development: "build(go-dev)"
     open-pull-requests-limit: 10
 #     ignore:
-#       - dependency-name: golangci/golangci-lint-action
+#       - dependency-name: foo
 #         versions:
-#           - "v3"
+#         - ">= 2.a, < 3"
