@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -23,9 +24,11 @@ func PathExists(path string) (bool, error) {
 	if err == nil {
 		return true, nil
 	}
+
 	if os.IsNotExist(err) {
 		return false, nil
 	}
+
 	return false, err
 }
 
@@ -34,6 +37,7 @@ func PathExists(path string) (bool, error) {
 //	path exists fast
 func PathExistsFast(path string) bool {
 	exists, _ := PathExists(path)
+
 	return exists
 }
 
@@ -45,6 +49,7 @@ func PathIsDir(path string) bool {
 	if err != nil {
 		return false
 	}
+
 	return s.IsDir()
 }
 
@@ -57,23 +62,60 @@ func RmDir(path string, force bool) error {
 	if force {
 		return os.RemoveAll(path)
 	}
+
 	exists, err := PathExists(path)
 	if err != nil {
 		return err
 	}
+
 	if exists {
 		return os.RemoveAll(path)
 	}
+
 	return fmt.Errorf("remove dir not exist path: %s , use force can cover this err", path)
 }
 
 // Mkdir
-// will use FetchDefaultFolderFileMode()
+// will use FetchDefaultFolderFileMode().
 func Mkdir(path string) error {
 	err := os.MkdirAll(path, FetchDefaultFolderFileMode())
 	if err != nil {
 		return fmt.Errorf("fail MkdirAll at path: %s , err: %v", path, err)
 	}
+
+	return nil
+}
+
+var CreateEmptyFilePathExisted = errors.New("create empty file path is existed")
+
+// CreateEmptyFile
+//
+//	path is the target path where the file crate.
+//	perm is the permission mode of the target file. os.FileMode(0o644) or os.FileMode(0o666)
+//
+// if path is exist, will return CreateEmptyFilePathExisted.
+func CreateEmptyFile(path string, perm os.FileMode) error {
+	if PathExistsFast(path) {
+		return CreateEmptyFilePathExisted
+	}
+
+	parentPath := filepath.Dir(path)
+	if !PathExistsFast(parentPath) {
+		err := os.MkdirAll(parentPath, FetchDefaultFolderFileMode())
+		if err != nil {
+			return fmt.Errorf(
+				"can not WriteFileByByte at new dir at mode: %v , at parent path: %v",
+				perm,
+				parentPath,
+			)
+		}
+	}
+
+	err := os.WriteFile(path, []byte{}, perm)
+	if err != nil {
+		return fmt.Errorf("create empty file at path: %v, err: %v", path, err)
+	}
+
 	return nil
 }
 
@@ -119,7 +161,12 @@ func CopyFile(
 
 	targetFile, errOpenTarget := os.OpenFile(target, os.O_CREATE|os.O_RDWR, perm)
 	if errOpenTarget != nil {
-		return fmt.Errorf("errOpenSource at CopyFile target mode: %v at: %s , %v", perm, target, errOpenTarget)
+		return fmt.Errorf(
+			"errOpenSource at CopyFile target mode: %v at: %s , %v",
+			perm,
+			target,
+			errOpenTarget,
+		)
 	}
 
 	_, errCopy := io.Copy(targetFile, sourceFile)
@@ -138,12 +185,15 @@ func ReadFileAsByte(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if !exists {
 		return nil, fmt.Errorf("path not exist %v", path)
 	}
+
 	if PathIsDir(path) {
 		return nil, fmt.Errorf("path is dir: %s", path)
 	}
+
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("path: %s read err: %v", path, err)
@@ -154,29 +204,36 @@ func ReadFileAsByte(path string) ([]byte, error) {
 
 // ReadFileAsLines
 //
-// read file as lines, this method will read all line, so if file is too big, will be slow
+// read file as lines, this method will read all line, so if file is too big, will be slow.
 func ReadFileAsLines(path string) ([]string, error) {
 	if !PathExistsFast(path) {
 		return nil, fmt.Errorf("read path %s not exists", path)
 	}
+
 	if PathIsDir(path) {
 		return nil, fmt.Errorf("read path %s is dir", path)
 	}
+
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("read path %s error %s", path, err)
 	}
+
 	defer func(file *os.File) {
 		errFileClose := file.Close()
 		if errFileClose != nil {
 			fmt.Printf("read close file err: %v\n", errFileClose)
 		}
 	}(file)
+
 	scanner := bufio.NewScanner(file)
+
 	var readLine []string
+
 	for scanner.Scan() {
 		readLine = append(readLine, scanner.Text())
 	}
+
 	return readLine, nil
 }
 
@@ -188,10 +245,12 @@ func ReadFileAsJson(path string, v interface{}) error {
 	if errRead != nil {
 		return fmt.Errorf("path: %s , read file as err: %v", path, errRead)
 	}
+
 	err := json.Unmarshal(fileAsByte, v)
 	if err != nil {
 		return fmt.Errorf("path: %s , read file as json err: %v", path, err)
 	}
+
 	return nil
 }
 
@@ -208,21 +267,29 @@ func WriteFileByByte(path string, data []byte, fileMod fs.FileMode, coverage boo
 		if err != nil {
 			return err
 		}
+
 		if exists {
 			return fmt.Errorf("not coverage, which path exist %v", path)
 		}
 	}
+
 	parentPath := filepath.Dir(path)
 	if !PathExistsFast(parentPath) {
 		err := os.MkdirAll(parentPath, FetchDefaultFolderFileMode())
 		if err != nil {
-			return fmt.Errorf("can not WriteFileByByte at new dir at mode: %v , at parent path: %v", fileMod, parentPath)
+			return fmt.Errorf(
+				"can not WriteFileByByte at new dir at mode: %v , at parent path: %v",
+				fileMod,
+				parentPath,
+			)
 		}
 	}
+
 	err := os.WriteFile(path, data, fileMod)
 	if err != nil {
 		return fmt.Errorf("write data at path: %v, err: %v", path, err)
 	}
+
 	return nil
 }
 
@@ -239,22 +306,28 @@ func WriteFileAsJson(path string, v interface{}, fileMod fs.FileMode, coverage, 
 		if err != nil {
 			return err
 		}
+
 		if exists {
 			return fmt.Errorf("not coverage, which path exist %v", path)
 		}
 	}
+
 	data, err := json.Marshal(v)
 	if err != nil {
 		return err
 	}
+
 	if beauty {
 		var str bytes.Buffer
+
 		errJson := json.Indent(&str, data, "", "  ")
 		if errJson != nil {
 			return errJson
 		}
+
 		return WriteFileByByte(path, str.Bytes(), fileMod, coverage)
 	}
+
 	return WriteFileByByte(path, data, fileMod, coverage)
 }
 
@@ -271,7 +344,7 @@ func WriteFileAsJsonBeauty(path string, v interface{}, coverage bool) error {
 //	use umask to get folder file mode
 //
 // if not windows, will use umask, will return os.FileMode(0o777) - umask
-// not support umask will use os.FileMode(0o777)
+// not support umask will use os.FileMode(0o777).
 func FetchDefaultFolderFileMode() fs.FileMode {
 	switch runtime.GOOS {
 	case "windows":
@@ -281,23 +354,30 @@ func FetchDefaultFolderFileMode() fs.FileMode {
 		if err != nil {
 			return os.FileMode(0o777)
 		}
+
 		if len(umaskCode) > 3 {
 			umaskCode = umaskCode[len(umaskCode)-3:]
 		}
+
 		umaskOct, errParseUmask := strconv.ParseInt(umaskCode, 8, 64)
 		if errParseUmask != nil {
 			return os.FileMode(0o777)
 		}
+
 		defaultFOlderCode := 0o777
+		// nolint:unconvert
 		nowOct := int(defaultFOlderCode) - int(umaskOct)
+
 		return os.FileMode(nowOct)
 	}
 }
 
 func getUmask() (string, error) {
 	cmd := exec.Command("sh", "-c", "umask")
+
 	var out bytes.Buffer
 	cmd.Stdout = &out
+
 	err := cmd.Run()
 	if err != nil {
 		return "", err
@@ -305,9 +385,10 @@ func getUmask() (string, error) {
 
 	scanner := bufio.NewScanner(&out)
 	scanner.Split(bufio.ScanWords)
+
 	if scanner.Scan() {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
 
-	return "", fmt.Errorf("no output from umask command")
+	return "", errors.New("no output from umask command")
 }
