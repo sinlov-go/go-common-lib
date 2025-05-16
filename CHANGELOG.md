@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.9.0](https://github.com/sinlov-go/go-common-lib/compare/v1.8.1...v1.9.0) (2025-05-17)
+
+### ✨ Features
+
+* add CreateEmptyFile function and related tests ([4f404447](https://github.com/sinlov-go/go-common-lib/commit/4f4044479a33508179dc767926096e0d1b59bff3))
+
+### ♻ Refactor
+
+* add comments and empty lines for better readability ([28f8c58e](https://github.com/sinlov-go/go-common-lib/commit/28f8c58ebcd42c70e2475d252d19a6f21cbfb557))
+
 ## [1.8.1](https://github.com/sinlov-go/go-common-lib/compare/v1.8.0...v1.8.1) (2025-05-14)
 
 ### 👷‍ Build System
