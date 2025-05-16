@@ -12,8 +12,10 @@ func NewInstance(obj interface{}) interface{} {
 	if obj == nil {
 		return nil
 	}
+
 	entity := reflect.ValueOf(obj)
 
+	// nolint:exhaustive
 	switch entity.Kind() {
 	case reflect.Ptr:
 		entity = reflect.New(entity.Elem().Type())
@@ -36,15 +38,19 @@ func Type(obj interface{}) reflect.Type {
 	if obj == nil {
 		return nil
 	}
+
 	if v, ok := obj.(reflect.Type); ok {
 		return v
 	}
+
 	if v, ok := obj.(reflect.Value); ok {
 		return v.Type()
 	}
+
 	if reflect.TypeOf(obj).Kind() == reflect.Ptr {
 		return reflect.TypeOf(obj).Elem()
 	}
+
 	return reflect.TypeOf(obj)
 }
 
@@ -54,10 +60,12 @@ func TypePenetrateElem(obj interface{}) reflect.Type {
 	if obj == nil {
 		return nil
 	}
+
 	ty := Type(obj)
 	for ty.Kind() == reflect.Ptr {
 		ty = ty.Elem()
 	}
+
 	return ty
 }
 
@@ -68,12 +76,15 @@ func Value(obj interface{}) reflect.Value {
 	if obj == nil {
 		return empty
 	}
+
 	if v, ok := obj.(reflect.Value); ok {
 		return v
 	}
+
 	if reflect.TypeOf(obj).Kind() == reflect.Ptr {
 		return reflect.ValueOf(obj).Elem()
 	}
+
 	return reflect.ValueOf(obj)
 }
 
@@ -84,10 +95,12 @@ func ValuePenetrateElem(obj interface{}) reflect.Value {
 	if obj == nil {
 		return empty
 	}
+
 	ty := Value(obj)
 	for ty.Kind() == reflect.Ptr {
 		ty = ty.Elem()
 	}
+
 	return ty
 }
 
@@ -97,6 +110,7 @@ func GetPkgPath(obj interface{}) string {
 	if ty == nil {
 		return ""
 	}
+
 	return ty.PkgPath()
 }
 
@@ -108,6 +122,7 @@ func Implements(obj interface{}, in interface{}) bool {
 	}
 
 	interfaceType := reflect.TypeOf(in).Elem()
+
 	return objType.Implements(interfaceType)
 }
 
@@ -115,6 +130,7 @@ func checkField(field reflect.Value, name string) error {
 	if !field.IsValid() {
 		return fmt.Errorf("field: %s is invalid", name)
 	}
+
 	if !field.CanSet() {
 		return fmt.Errorf("field: %s can not set", name)
 	}
